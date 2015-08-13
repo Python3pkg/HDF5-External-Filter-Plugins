@@ -20,7 +20,7 @@ AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_AUX_DIR([bin])
 ## AM_INIT_AUTOMAKE takes a list of options that should be applied to
 ## every Makefile.am when automake is run.
-AM_INIT_AUTOMAKE([foreign serial-tests])
+AM_INIT_AUTOMAKE
 AM_CONFIG_HEADER(config.h)
 
 ## Turn off automake rebuild rules so make doesn't try to run automake
@@ -29,13 +29,12 @@ AM_MAINTAINER_MODE
 
 # Checks for programs.
 AC_PROG_CC
-AC_PROG_RANLIB
 AC_PROG_INSTALL
 
 AC_CANONICAL_HOST
 AC_PREFIX_DEFAULT([`pwd`/plugins])
 
-LT_INIT
+LT_INIT([dlopen])
 
 ## Source any special files that we need. These files normally aren't
 ## present but can be used by the maintainers to fine tune things like
@@ -134,19 +133,7 @@ EOF
     ;;
 esac
 
-## HDF5 compile commands.
-AC_SUBST([H5CC])
-AC_SUBST([H5CC_PP])
-AC_SUBST([H5FC])
-AC_SUBST([H5FC_PP])
-AC_SUBST([H5CPP])
 
-## Make sure they are set to something.
-H5CC="${H5CC:-h5cc}"
-H5CC_PP="${H5CC_PP:-h5pcc}"
-H5FC="${H5FC:-h5fc}"
-H5FC_PP="${H5FC_PP:-h5pfc}"
-H5CPP="${H5CPP:-h5c++}"
 
 ## ----------------------------------------------------------------------
 ## Fake --with-xxx option to allow us to create a help message for the
@@ -163,91 +150,6 @@ AC_ARG_WITH([fnord],
     --with-xxx=DIR     - Specify only the directory which contains the
                          include/ and lib/ subdirectories
   ],,)
-
-
-## ----------------------------------------------------------------------
-## Is the lz4 library present? It has a header file `lz4.h' and a library
-## `-llz4' and their locations might be specified with the `--with-lz4lib'
-## command-line switch. The value is an include path and/or a library path.
-## If the library path is specified then it must be preceded by a comma.
-##
-AC_ARG_WITH([lz4lib],
-            [AS_HELP_STRING([--with-lz4lib=DIR],
-                            [Use lz4lib library for compressed I/O
-                             filter [default=yes]])],,)
-
-case $withval in
-  yes)
-    HAVE_LZ4LIB="yes"
-    AC_CHECK_HEADER([lz4.h], [HAVE_LZ4_H="yes"], [unset HAVE_LZ4LIB])
-    if test "x$HAVE_LZ4LIB" = "xyes" -a "x$HAVE_LZ4_H" = "xyes"; then
-      AC_CHECK_LIB([lz4], [LZ4_compress],, [unset HAVE_LZ4LIB])
-    fi
-    if test -z "$HAVE_LZ4LIB"; then
-      AC_MSG_ERROR([couldn't find lz4lib library])
-    else
-      AC_CHECK_FUNC([LZ4_compress], [HAVE_LZ4_COMPRESS="yes"])
-    fi
-    ;;
-  no)
-    HAVE_LZ4LIB="no"
-    AC_MSG_ERROR([lz4 library needed for compilation.])
-    ;;
-  *)
-    HAVE_LZ4LIB="yes"
-    case "$withval" in
-      *,*)
-        lz4lib_inc="`echo $withval | cut -f1 -d,`"
-        lz4lib_lib="`echo $withval | cut -f2 -d, -s`"
-        ;;
-      *)
-        if test -n "$withval"; then
-          lz4lib_inc="$withval/include"
-          lz4lib_lib="$withval/lib"
-        fi
-        ;;
-    esac
-
-    ## Trying to include -I/usr/include and -L/usr/lib is redundant and
-    ## can mess some compilers up.
-    if test "X$lz4lib_inc" = "X/usr/include"; then
-      lz4lib_inc=""
-    fi
-    if test "X$lz4lib_lib" = "X/usr/lib"; then
-      lz4lib_lib=""
-    fi
-
-    saved_CPPFLAGS="$CPPFLAGS"
-    saved_AM_CPPFLAGS="$AM_CPPFLAGS"
-    saved_LDFLAGS="$LDFLAGS"
-    saved_AM_LDFLAGS="$AM_LDFLAGS"
-
-    if test -n "$lz4lib_inc"; then
-      CPPFLAGS="$CPPFLAGS -I$lz4lib_inc"
-      AM_CPPFLAGS="$AM_CPPFLAGS -I$lz4lib_inc"
-    fi
-
-    AC_CHECK_HEADER([lz4.h],
-                     [HAVE_LZ4_H="yes"],
-                     [CPPFLAGS="$saved_CPPFLAGS"; AM_CPPFLAGS="$saved_AM_CPPFLAGS"] [unset HAVE_LZLIB])
-
-    if test -n "$lz4lib_lib"; then
-      LDFLAGS="$LDFLAGS -L$lz4lib_lib"
-      AM_LDFLAGS="$AM_LDFLAGS -L$lz4lib_lib"
-    fi
-
-    if test "x$HAVE_LZ4LIB" = "xyes" -a "x$HAVE_LZ4_H" = "xyes"; then
-      AC_CHECK_LIB([lz4], [LZ4_compress],,
-                   [LDFLAGS="$saved_LDFLAGS"; AM_LDFLAGS="$saved_AM_LDFLAGS"; unset HAVE_LZ4LIB])
-    fi
-
-    if test -z "$HAVE_LZ4LIB"; then
-      AC_MSG_ERROR([couldn't find lz4 library])
-    else
-      AC_CHECK_FUNC([LZ4_compress], [HAVE_LZ4_COMPRESS="yes"])
-    fi
-    ;;
-esac
 
 ## ----------------------------------------------------------------------
 ## Where's HDF5? We need to find out where the HDF5 library
@@ -322,8 +224,6 @@ case "$withval" in
     ;;
 esac
 
-H5CC=${HDF5PATH}/h5cc
-H5FC=${HDF5PATH}/h5fc
 
 ## Add the suffix to CC for shared linking.  Cannot just set as an option
 ## because it must be first.

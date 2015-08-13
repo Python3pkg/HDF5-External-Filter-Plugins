@@ -16,14 +16,12 @@
 ## Run automake to generate a Makefile.in from this file.
 ##
 
-# HDF5 compile commands, assuming they are in your $PATH.
-H5CC=@H5CC@
-
 # Shell commands used in Makefiles
 RM=rm -f
 CP=cp
 
 noinst_PROGRAMS = h5ex_d_lz4
+h5ex_d_lz4_SOURCE = h5ex_d_lz4.c
 
 EXTRA_DIST = testfiles/h5ex_d_lz4.tst testfiles/h5ex_d_lz4.ddl test.sh
 EXTRA_PROG = $(noinst_PROGRAMS)
@@ -41,6 +39,3 @@ AM_SH_LOG_FLAGS =
 
 CLEANFILES=*.h5 tmp.test tmp.out
 DISTCLEANFILES=test.sh
-
-$(EXTRA_PROG): $(H5CC)
-  $(H5CC) $(H5CCFLAGS) $(CFLAGS) -o $@ $(srcdir)/$@.c;

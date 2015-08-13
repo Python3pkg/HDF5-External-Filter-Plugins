@@ -15,9 +15,6 @@
 /* Define to 1 if you have the `hdf5' library (-lhdf5). */
 #undef HAVE_LIBHDF5
 
-/* Define to 1 if you have the `lz4' library (-llz4). */
-#undef HAVE_LIBLZ4
-
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 
