@@ -17,6 +17,7 @@ CP=cp
 MAJOR = 0
 MINOR = 1
 VERSION = $(MAJOR).$(MINOR)
+AM_LDFLAGS = -module -avoid-version -export-dynamic
 
 # The libh5lz4 library for plugin module.
 # Build it as shared library.
