@@ -12,7 +12,7 @@ GROUP "/" {
             FILTER_ID 32004
             
             COMMENT HDF5 lz4 filter; see http://www.hdfgroup.org/services/contributions.html
-            PARAMS { 2 0 }
+            PARAMS { 2 }
          }
       }
       FILLVALUE {
@@ -35,7 +35,7 @@ GROUP "/" {
             FILTER_ID 32004
             
             COMMENT HDF5 lz4 filter; see http://www.hdfgroup.org/services/contributions.html
-            PARAMS { 2 0 }
+            PARAMS { 2 }
          }
       }
       FILLVALUE {
@@ -58,7 +58,7 @@ GROUP "/" {
             FILTER_ID 32004
             
             COMMENT HDF5 lz4 filter; see http://www.hdfgroup.org/services/contributions.html
-            PARAMS { 2 0 }
+            PARAMS { 2 }
          }
       }
       FILLVALUE {
@@ -81,7 +81,7 @@ GROUP "/" {
             FILTER_ID 32004
             
             COMMENT HDF5 lz4 filter; see http://www.hdfgroup.org/services/contributions.html
-            PARAMS { 2 0 }
+            PARAMS { 2 }
          }
       }
       FILLVALUE {
@@ -104,7 +104,7 @@ GROUP "/" {
             FILTER_ID 32004
             
             COMMENT HDF5 lz4 filter; see http://www.hdfgroup.org/services/contributions.html
-            PARAMS { 2 0 }
+            PARAMS { 2 }
          }
       }
       FILLVALUE {
@@ -127,7 +127,7 @@ GROUP "/" {
             FILTER_ID 32004
             
             COMMENT HDF5 lz4 filter; see http://www.hdfgroup.org/services/contributions.html
-            PARAMS { 2 0 }
+            PARAMS { 2 }
          }
       }
       FILLVALUE {
@@ -150,7 +150,7 @@ GROUP "/" {
             FILTER_ID 32004
             
             COMMENT HDF5 lz4 filter; see http://www.hdfgroup.org/services/contributions.html
-            PARAMS { 2 0 }
+            PARAMS { 2 }
          }
       }
       FILLVALUE {
