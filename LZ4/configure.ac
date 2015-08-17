@@ -15,7 +15,7 @@
 ## access to either file, you may request a copy from help@hdfgroup.org.
 
 AC_PREREQ(2.59)
-AC_INIT(H5LZ4, 0.1, help@hdfgroup.org)
+AC_INIT([HDF5 LZ4 filter plugin], [0.1], help@hdfgroup.org)
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_AUX_DIR([bin])
 ## AM_INIT_AUTOMAKE takes a list of options that should be applied to
