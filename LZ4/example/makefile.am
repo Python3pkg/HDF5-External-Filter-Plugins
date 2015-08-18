@@ -23,7 +23,15 @@ CP=cp
 noinst_PROGRAMS = h5ex_d_lz4
 h5ex_d_lz4_SOURCE = h5ex_d_lz4.c
 
-EXTRA_DIST = testfiles/h5ex_d_lz4.tst testfiles/h5ex_d_lz4.ddl test.sh
+# we have to add the testfiles to the distribution - otherwise the 
+# tests will not run
+EXTRA_DIST = testfiles/h5ex_d_lz4.tst testfiles/h5ex_d_lz4.ddl test.sh \
+             testfiles/h5repack_layout.h5 \
+             testfiles/h5ex_d_lz4.ddl \
+             testfiles/h5ex_d_lz4.tst \
+             testfiles/h5repack_layout.h5-ud_convert.ddl \
+             testfiles/ud_convert.h5repack_layout.h5.tst
+
 EXTRA_PROG = $(noinst_PROGRAMS)
 
 TESTS_ENVIRONMENT = sh
