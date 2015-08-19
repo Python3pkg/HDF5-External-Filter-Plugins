@@ -155,6 +155,8 @@ AC_ARG_WITH([fnord],
 ## Where's HDF5? We need to find out where the HDF5 library
 ## and header files are if they aren't in system library/include places.
 ##
+## The only reason we need the HDF5 library is to run the tests.
+##
 AC_SUBST(LIBHDF5) LIBHDF5=""
 AC_SUBST(HDF5PATH) HDF5PATH=""
 AC_ARG_WITH([hdf5],
@@ -265,35 +267,6 @@ then
   PLUGIN_H5LZ4=1
 fi
 AM_CONDITIONAL(H5LZ4, test "$PLUGIN_H5LZ4")
-
-## Check if a Fortran 2003 compiler was used for h5fc
-HAVE_FORTRAN_2003="no"
-
-AC_MSG_CHECKING([if h5fc was compiled with Fortran 2003 enabled])
-if (${FC} -showconfig 2>&1 | grep 'Fortran 2003 Compiler: yes') > /dev/null; then
-  HAVE_FORTRAN_2003="yes"
-fi
-echo $HAVE_FORTRAN_2003 
-
-## Check if we have Fortran 2003 and Intel compiler; Intel does not work with RECURSIVE used by h5ex_g_traverse.f90
-## The example will not be built when Intel compiler is used (EIP 2011/10/14)
-
-if test "X$HAVE_FORTRAN_2003" = "Xyes"; then
-  HAVE_FORTRAN_2003_NOTINTEL="yes"
-  AC_MSG_CHECKING([if h5fc is an Intel Fortran compiler])
-  if (${H5FC} -showconfig 2>&1 | grep 'Intel(R) Fortran ') > /dev/null; then
-    HAVE_FORTRAN_2003_NOTINTEL="no"
-  fi
-  if test "X$HAVE_FORTRAN_2003_NOTINTEL" = "Xyes"; then
-    echo "no"
-  else
-    echo "yes"
-  fi 
-fi
-## End check if we have Fortran 2003 and Intel compiler.
-
-AM_CONDITIONAL([FORTRAN_2003_CONDITIONAL_F], [test "X$HAVE_FORTRAN_2003" = "Xyes"])
-AM_CONDITIONAL([FORTRAN_2003_NOTINTEL_CONDITIONAL_F], [test "X$HAVE_FORTRAN_2003_NOTINTEL" = "Xyes"])
 
 LT_OUTPUT
 
