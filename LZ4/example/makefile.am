@@ -47,5 +47,5 @@ TEST_EXTENSIONS = .sh
 SH_LOG_COMPILER = $(SHELL)
 AM_SH_LOG_FLAGS =
 
-CLEANFILES=*.h5 tmp.test tmp.out
+CLEANFILES=*.h5 tmp.test tmp.out *.tst *.ddl 
 DISTCLEANFILES=test.sh
