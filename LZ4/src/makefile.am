@@ -23,6 +23,7 @@ AM_LDFLAGS = -module -avoid-version -export-dynamic
 # Build it as shared library.
 lib_LTLIBRARIES=libh5lz4.la
 libh5lz4_la_SOURCES = H5Zlz4.c lz4.c lz4hc.c lz4.h lz4hc.h
+libh5lz4_la_LIBADD =
 
 
 CHECK_CLEANFILES=*.o *.so* 

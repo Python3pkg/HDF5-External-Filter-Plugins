@@ -79,9 +79,13 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES = test.sh
 CONFIG_CLEAN_VPATH_FILES =
 PROGRAMS = $(noinst_PROGRAMS)
-h5ex_d_lz4_SOURCES = h5ex_d_lz4.c
-h5ex_d_lz4_OBJECTS = h5ex_d_lz4.$(OBJEXT)
-h5ex_d_lz4_LDADD = $(LDADD)
+am_h5ex_d_lz4_OBJECTS = h5ex_d_lz4-h5ex_d_lz4.$(OBJEXT)
+h5ex_d_lz4_OBJECTS = $(am_h5ex_d_lz4_OBJECTS)
+am__DEPENDENCIES_1 =
+h5ex_d_lz4_DEPENDENCIES = $(am__DEPENDENCIES_1)
+h5ex_d_lz4_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(h5ex_d_lz4_CFLAGS) \
+	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/bin/depcomp
 am__depfiles_maybe = depfiles
@@ -95,8 +99,8 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = h5ex_d_lz4.c
-DIST_SOURCES = h5ex_d_lz4.c
+SOURCES = $(h5ex_d_lz4_SOURCES)
+DIST_SOURCES = $(h5ex_d_lz4_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -132,7 +136,8 @@ EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
 GREP = @GREP@
-HDF5PATH = @HDF5PATH@
+HDF5_CFLAGS = @HDF5_CFLAGS@
+HDF5_LIBS = @HDF5_LIBS@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -140,7 +145,6 @@ INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
-LIBHDF5 = @LIBHDF5@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
@@ -165,6 +169,9 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
+PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
@@ -227,7 +234,9 @@ top_srcdir = @top_srcdir@
 # Shell commands used in Makefiles
 RM = rm -f
 CP = cp
-h5ex_d_lz4_SOURCE = h5ex_d_lz4.c
+h5ex_d_lz4_SOURCES = h5ex_d_lz4.c
+h5ex_d_lz4_CFLAGS = $(AM_CFLAGS) $(HDF5_CFLAGS) $(CFLAGS)
+h5ex_d_lz4_LDADD = $(HDF5_LIBS)
 
 # we have to add the testfiles to the distribution - otherwise the 
 # tests will not run
@@ -294,7 +303,7 @@ clean-noinstPROGRAMS:
 	rm -f $$list
 h5ex_d_lz4$(EXEEXT): $(h5ex_d_lz4_OBJECTS) $(h5ex_d_lz4_DEPENDENCIES) $(EXTRA_h5ex_d_lz4_DEPENDENCIES) 
 	@rm -f h5ex_d_lz4$(EXEEXT)
-	$(LINK) $(h5ex_d_lz4_OBJECTS) $(h5ex_d_lz4_LDADD) $(LIBS)
+	$(h5ex_d_lz4_LINK) $(h5ex_d_lz4_OBJECTS) $(h5ex_d_lz4_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -302,7 +311,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/h5ex_d_lz4.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/h5ex_d_lz4-h5ex_d_lz4.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -324,6 +333,20 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
+
+h5ex_d_lz4-h5ex_d_lz4.o: h5ex_d_lz4.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(h5ex_d_lz4_CFLAGS) $(CFLAGS) -MT h5ex_d_lz4-h5ex_d_lz4.o -MD -MP -MF $(DEPDIR)/h5ex_d_lz4-h5ex_d_lz4.Tpo -c -o h5ex_d_lz4-h5ex_d_lz4.o `test -f 'h5ex_d_lz4.c' || echo '$(srcdir)/'`h5ex_d_lz4.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/h5ex_d_lz4-h5ex_d_lz4.Tpo $(DEPDIR)/h5ex_d_lz4-h5ex_d_lz4.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='h5ex_d_lz4.c' object='h5ex_d_lz4-h5ex_d_lz4.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(h5ex_d_lz4_CFLAGS) $(CFLAGS) -c -o h5ex_d_lz4-h5ex_d_lz4.o `test -f 'h5ex_d_lz4.c' || echo '$(srcdir)/'`h5ex_d_lz4.c
+
+h5ex_d_lz4-h5ex_d_lz4.obj: h5ex_d_lz4.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(h5ex_d_lz4_CFLAGS) $(CFLAGS) -MT h5ex_d_lz4-h5ex_d_lz4.obj -MD -MP -MF $(DEPDIR)/h5ex_d_lz4-h5ex_d_lz4.Tpo -c -o h5ex_d_lz4-h5ex_d_lz4.obj `if test -f 'h5ex_d_lz4.c'; then $(CYGPATH_W) 'h5ex_d_lz4.c'; else $(CYGPATH_W) '$(srcdir)/h5ex_d_lz4.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/h5ex_d_lz4-h5ex_d_lz4.Tpo $(DEPDIR)/h5ex_d_lz4-h5ex_d_lz4.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='h5ex_d_lz4.c' object='h5ex_d_lz4-h5ex_d_lz4.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(h5ex_d_lz4_CFLAGS) $(CFLAGS) -c -o h5ex_d_lz4-h5ex_d_lz4.obj `if test -f 'h5ex_d_lz4.c'; then $(CYGPATH_W) 'h5ex_d_lz4.c'; else $(CYGPATH_W) '$(srcdir)/h5ex_d_lz4.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

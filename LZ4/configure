@@ -635,15 +635,11 @@ ac_includes_default="\
 ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
-FORTRAN_2003_NOTINTEL_CONDITIONAL_F_FALSE
-FORTRAN_2003_NOTINTEL_CONDITIONAL_F_TRUE
-FORTRAN_2003_CONDITIONAL_F_FALSE
-FORTRAN_2003_CONDITIONAL_F_TRUE
 H5LZ4_FALSE
 H5LZ4_TRUE
 LIBOBJS
-HDF5PATH
-LIBHDF5
+HDF5_LIBS
+HDF5_CFLAGS
 CPP
 OTOOL64
 OTOOL
@@ -674,6 +670,9 @@ build_os
 build_vendor
 build_cpu
 build
+PKG_CONFIG_LIBDIR
+PKG_CONFIG_PATH
+PKG_CONFIG
 am__fastdepCC_FALSE
 am__fastdepCC_TRUE
 CCDEPMODE
@@ -768,7 +767,6 @@ with_gnu_ld
 with_sysroot
 enable_libtool_lock
 with_fnord
-with_hdf5
 '
       ac_precious_vars='build_alias
 host_alias
@@ -778,7 +776,12 @@ CFLAGS
 LDFLAGS
 LIBS
 CPPFLAGS
-CPP'
+PKG_CONFIG
+PKG_CONFIG_PATH
+PKG_CONFIG_LIBDIR
+CPP
+HDF5_CFLAGS
+HDF5_LIBS'
 
 
 # Initialize some variables set by options.
@@ -1425,7 +1428,6 @@ Optional Packages:
     --with-xxx=DIR     - Specify only the directory which contains the
                          include/ and lib/ subdirectories
 
-  --with-hdf5=DIR         Where to find the HDF5 library
 
 Some influential environment variables:
   CC          C compiler command
@@ -1435,7 +1437,14 @@ Some influential environment variables:
   LIBS        libraries to pass to the linker, e.g. -l<library>
   CPPFLAGS    (Objective) C/C++ preprocessor flags, e.g. -I<include dir> if
               you have headers in a nonstandard directory <include dir>
+  PKG_CONFIG  path to pkg-config utility
+  PKG_CONFIG_PATH
+              directories to add to pkg-config's search path
+  PKG_CONFIG_LIBDIR
+              path overriding pkg-config's built-in search path
   CPP         C preprocessor
+  HDF5_CFLAGS C compiler flags for HDF5, overriding pkg-config
+  HDF5_LIBS   linker flags for HDF5, overriding pkg-config
 
 Use these variables to override the choices made by `configure' or to help
 it to find libraries and programs with nonstandard names/locations.
@@ -3794,7 +3803,253 @@ else
 fi
 
 
+if test "x$CC" != xcc; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether $CC and cc understand -c and -o together" >&5
+$as_echo_n "checking whether $CC and cc understand -c and -o together... " >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether cc understands -c and -o together" >&5
+$as_echo_n "checking whether cc understands -c and -o together... " >&6; }
+fi
+set dummy $CC; ac_cc=`$as_echo "$2" |
+		      sed 's/[^a-zA-Z0-9_]/_/g;s/^[0-9]/_/'`
+if eval \${ac_cv_prog_cc_${ac_cc}_c_o+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
 
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+# Make sure it works both with $CC and with simple cc.
+# We do the test twice because some compilers refuse to overwrite an
+# existing .o file with -o, though they will create one.
+ac_try='$CC -c conftest.$ac_ext -o conftest2.$ac_objext >&5'
+rm -f conftest2.*
+if { { case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:${as_lineno-$LINENO}: $ac_try_echo\""
+$as_echo "$ac_try_echo"; } >&5
+  (eval "$ac_try") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; } &&
+   test -f conftest2.$ac_objext && { { case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:${as_lineno-$LINENO}: $ac_try_echo\""
+$as_echo "$ac_try_echo"; } >&5
+  (eval "$ac_try") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; };
+then
+  eval ac_cv_prog_cc_${ac_cc}_c_o=yes
+  if test "x$CC" != xcc; then
+    # Test first that cc exists at all.
+    if { ac_try='cc -c conftest.$ac_ext >&5'
+  { { case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:${as_lineno-$LINENO}: $ac_try_echo\""
+$as_echo "$ac_try_echo"; } >&5
+  (eval "$ac_try") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; }; then
+      ac_try='cc -c conftest.$ac_ext -o conftest2.$ac_objext >&5'
+      rm -f conftest2.*
+      if { { case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:${as_lineno-$LINENO}: $ac_try_echo\""
+$as_echo "$ac_try_echo"; } >&5
+  (eval "$ac_try") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; } &&
+	 test -f conftest2.$ac_objext && { { case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:${as_lineno-$LINENO}: $ac_try_echo\""
+$as_echo "$ac_try_echo"; } >&5
+  (eval "$ac_try") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; };
+      then
+	# cc works too.
+	:
+      else
+	# cc exists but doesn't like -o.
+	eval ac_cv_prog_cc_${ac_cc}_c_o=no
+      fi
+    fi
+  fi
+else
+  eval ac_cv_prog_cc_${ac_cc}_c_o=no
+fi
+rm -f core conftest*
+
+fi
+if eval test \$ac_cv_prog_cc_${ac_cc}_c_o = yes; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+
+$as_echo "#define NO_MINUS_C_MINUS_O 1" >>confdefs.h
+
+fi
+
+# FIXME: we rely on the cache variable name because
+# there is no other way.
+set dummy $CC
+am_cc=`echo $2 | sed 's/[^a-zA-Z0-9_]/_/g;s/^[0-9]/_/'`
+eval am_t=\$ac_cv_prog_cc_${am_cc}_c_o
+if test "$am_t" != yes; then
+   # Losing compiler, so override with the script.
+   # FIXME: It is wrong to rewrite CC.
+   # But if we don't then we get into trouble of one sort or another.
+   # A longer-term fix would be to have automake use am__CC in this case,
+   # and then we could set am__CC="\$(top_srcdir)/compile \$(CC)"
+   CC="$am_aux_dir/compile $CC"
+fi
+
+
+
+
+
+
+
+
+
+
+if test "x$ac_cv_env_PKG_CONFIG_set" != "xset"; then
+	if test -n "$ac_tool_prefix"; then
+  # Extract the first word of "${ac_tool_prefix}pkg-config", so it can be a program name with args.
+set dummy ${ac_tool_prefix}pkg-config; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_PKG_CONFIG+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $PKG_CONFIG in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_PKG_CONFIG="$PKG_CONFIG" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_PKG_CONFIG="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+PKG_CONFIG=$ac_cv_path_PKG_CONFIG
+if test -n "$PKG_CONFIG"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $PKG_CONFIG" >&5
+$as_echo "$PKG_CONFIG" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+fi
+if test -z "$ac_cv_path_PKG_CONFIG"; then
+  ac_pt_PKG_CONFIG=$PKG_CONFIG
+  # Extract the first word of "pkg-config", so it can be a program name with args.
+set dummy pkg-config; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_ac_pt_PKG_CONFIG+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $ac_pt_PKG_CONFIG in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_ac_pt_PKG_CONFIG="$ac_pt_PKG_CONFIG" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_ac_pt_PKG_CONFIG="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+ac_pt_PKG_CONFIG=$ac_cv_path_ac_pt_PKG_CONFIG
+if test -n "$ac_pt_PKG_CONFIG"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_pt_PKG_CONFIG" >&5
+$as_echo "$ac_pt_PKG_CONFIG" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+  if test "x$ac_pt_PKG_CONFIG" = x; then
+    PKG_CONFIG=""
+  else
+    case $cross_compiling:$ac_tool_warned in
+yes:)
+{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: using cross tools not prefixed with host triplet" >&5
+$as_echo "$as_me: WARNING: using cross tools not prefixed with host triplet" >&2;}
+ac_tool_warned=yes ;;
+esac
+    PKG_CONFIG=$ac_pt_PKG_CONFIG
+  fi
+else
+  PKG_CONFIG="$ac_cv_path_PKG_CONFIG"
+fi
+
+fi
+if test -n "$PKG_CONFIG"; then
+	_pkg_min_version=0.9.0
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking pkg-config is at least version $_pkg_min_version" >&5
+$as_echo_n "checking pkg-config is at least version $_pkg_min_version... " >&6; }
+	if $PKG_CONFIG --atleast-pkgconfig-version $_pkg_min_version; then
+		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	else
+		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+		PKG_CONFIG=""
+	fi
+fi
 
 # Make sure we can run config.sub.
 $SHELL "$ac_aux_dir/config.sub" sun4 >/dev/null 2>&1 ||
@@ -11570,179 +11825,82 @@ fi
 ## Where's HDF5? We need to find out where the HDF5 library
 ## and header files are if they aren't in system library/include places.
 ##
- LIBHDF5=""
- HDF5PATH=""
+## The only reason we need the HDF5 library is to run the tests.
+##
+## This needs some improvement if we cannot find the HDF5 library via
+## pkg-config.
 
-# Check whether --with-hdf5 was given.
-if test "${with_hdf5+set}" = set; then :
-  withval=$with_hdf5;
-fi
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for HDF5" >&5
+$as_echo_n "checking for HDF5... " >&6; }
 
-
-case "$withval" in
-  yes)
-    ac_fn_c_check_header_mongrel "$LINENO" "hdf5.h" "ac_cv_header_hdf5_h" "$ac_includes_default"
-if test "x$ac_cv_header_hdf5_h" = xyes; then :
-
+if test -n "$HDF5_CFLAGS"; then
+    pkg_cv_HDF5_CFLAGS="$HDF5_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"hdf5\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "hdf5") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_HDF5_CFLAGS=`$PKG_CONFIG --cflags "hdf5" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
 else
-  as_fn_error $? "cannot find HDF5 header files." "$LINENO" 5
+  pkg_failed=yes
 fi
-
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for H5open in -lhdf5" >&5
-$as_echo_n "checking for H5open in -lhdf5... " >&6; }
-if ${ac_cv_lib_hdf5_H5open+:} false; then :
-  $as_echo_n "(cached) " >&6
+ else
+    pkg_failed=untried
+fi
+if test -n "$HDF5_LIBS"; then
+    pkg_cv_HDF5_LIBS="$HDF5_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"hdf5\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "hdf5") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_HDF5_LIBS=`$PKG_CONFIG --libs "hdf5" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
 else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lhdf5  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
 
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char H5open ();
-int
-main ()
-{
-return H5open ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_hdf5_H5open=yes
+
+
+if test $pkg_failed = yes; then
+   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
 else
-  ac_cv_lib_hdf5_H5open=no
+        _pkg_short_errors_supported=no
 fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_hdf5_H5open" >&5
-$as_echo "$ac_cv_lib_hdf5_H5open" >&6; }
-if test "x$ac_cv_lib_hdf5_H5open" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBHDF5 1
-_ACEOF
-
-  LIBS="-lhdf5 $LIBS"
-
-else
-  as_fn_error $? "cannot find the HDF5 library." "$LINENO" 5
-fi
-
-    ;;
-  no)
-    as_fn_error $? "HDF5 library needed for compilation." "$LINENO" 5
-    ;;
-  *)
-    case "$withval" in
-      *,*)
-        hdf5_inc="`echo $withval | cut -f1 -d,`"
-        hdf5_lib="`echo $withval | cut -f2 -d, -s`"
-        ;;
-      *)
-        if test -n "$withval"; then
-          hdf5_inc="$withval/include"
-          hdf5_lib="$withval/lib"
+        if test $_pkg_short_errors_supported = yes; then
+	        HDF5_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "hdf5" 2>&1`
+        else
+	        HDF5_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "hdf5" 2>&1`
         fi
-        ;;
-    esac
+	# Put the nasty error message in config.log where it belongs
+	echo "$HDF5_PKG_ERRORS" >&5
 
-    if test -n "$hdf5_inc"; then
-      CPPFLAGS="$CPPFLAGS -I$hdf5_inc"
-    fi
-
-    ac_fn_c_check_header_mongrel "$LINENO" "hdf5.h" "ac_cv_header_hdf5_h" "$ac_includes_default"
-if test "x$ac_cv_header_hdf5_h" = xyes; then :
-
+	as_fn_error $? "Could not find HDF5 - required for plugin test!" "$LINENO" 5
+elif test $pkg_failed = untried; then
+     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+	as_fn_error $? "Could not find HDF5 - required for plugin test!" "$LINENO" 5
 else
-  as_fn_error $? "cannot find HDF5 header files!" "$LINENO" 5
+	HDF5_CFLAGS=$pkg_cv_HDF5_CFLAGS
+	HDF5_LIBS=$pkg_cv_HDF5_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	HDF5_FOUND=1
 fi
 
-
-
-    HDF5PATH="$hdf5_lib,"
-    HDF5PATH="`echo $HDF5PATH | sed -e "s/lib,/bin/"`"
-
-    if test -n "$hdf5_lib"; then
-      LDFLAGS="$LDFLAGS -L$hdf5_lib"
-
-      ## We want to use the ``.la'' version of the HDF5 library which
-      ## is the thing libtool creates and has in it all of the neat
-      ## stuff like where to find the libraries libhdf5 depends upon.
-      if test -f "$hdf5_lib/libhdf5.la"; then
-        libdir_saved=$libdir
-        . $hdf5_lib/libhdf5.la
-        libdir=$libdir_saved
-        for lib in X $dependency_libs; do
-          case "$lib" in
-            *libhdf5.la*)
-              ;;
-            *)
-              if test "$lib" != "X"; then
-                LIBHDF5="$LIBHDF5 $lib"
-              fi
-              ;;
-          esac
-        done
-      fi
-    fi
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for H5open in -lhdf5" >&5
-$as_echo_n "checking for H5open in -lhdf5... " >&6; }
-if ${ac_cv_lib_hdf5_H5open+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lhdf5  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char H5open ();
-int
-main ()
-{
-return H5open ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_hdf5_H5open=yes
-else
-  ac_cv_lib_hdf5_H5open=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_hdf5_H5open" >&5
-$as_echo "$ac_cv_lib_hdf5_H5open" >&6; }
-if test "x$ac_cv_lib_hdf5_H5open" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBHDF5 1
-_ACEOF
-
-  LIBS="-lhdf5 $LIBS"
-
-else
-  as_fn_error $? "cannot find HDF5 library." "$LINENO" 5
-fi
-
-    ;;
-esac
 
 
 ## Add the suffix to CC for shared linking.  Cannot just set as an option
@@ -11754,30 +11912,6 @@ fi
 ## ======================================================================
 ## Checks for library functions
 ## ======================================================================
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for math library support" >&5
-$as_echo_n "checking for math library support... " >&6; }
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include <math.h>
-int
-main ()
-{
-volatile x = 37.927; k=1.2; sinh(x*k/cosh(x/k)
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }; LIBS="$LIBS -lm"
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-
 
 ## Checks for libraries.
 
@@ -12144,51 +12278,6 @@ fi
 else
   H5LZ4_TRUE='#'
   H5LZ4_FALSE=
-fi
-
-
-## Check if a Fortran 2003 compiler was used for h5fc
-HAVE_FORTRAN_2003="no"
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking if h5fc was compiled with Fortran 2003 enabled" >&5
-$as_echo_n "checking if h5fc was compiled with Fortran 2003 enabled... " >&6; }
-if (${FC} -showconfig 2>&1 | grep 'Fortran 2003 Compiler: yes') > /dev/null; then
-  HAVE_FORTRAN_2003="yes"
-fi
-echo $HAVE_FORTRAN_2003
-
-## Check if we have Fortran 2003 and Intel compiler; Intel does not work with RECURSIVE used by h5ex_g_traverse.f90
-## The example will not be built when Intel compiler is used (EIP 2011/10/14)
-
-if test "X$HAVE_FORTRAN_2003" = "Xyes"; then
-  HAVE_FORTRAN_2003_NOTINTEL="yes"
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking if h5fc is an Intel Fortran compiler" >&5
-$as_echo_n "checking if h5fc is an Intel Fortran compiler... " >&6; }
-  if (${H5FC} -showconfig 2>&1 | grep 'Intel(R) Fortran ') > /dev/null; then
-    HAVE_FORTRAN_2003_NOTINTEL="no"
-  fi
-  if test "X$HAVE_FORTRAN_2003_NOTINTEL" = "Xyes"; then
-    echo "no"
-  else
-    echo "yes"
-  fi
-fi
-## End check if we have Fortran 2003 and Intel compiler.
-
- if test "X$HAVE_FORTRAN_2003" = "Xyes"; then
-  FORTRAN_2003_CONDITIONAL_F_TRUE=
-  FORTRAN_2003_CONDITIONAL_F_FALSE='#'
-else
-  FORTRAN_2003_CONDITIONAL_F_TRUE='#'
-  FORTRAN_2003_CONDITIONAL_F_FALSE=
-fi
-
- if test "X$HAVE_FORTRAN_2003_NOTINTEL" = "Xyes"; then
-  FORTRAN_2003_NOTINTEL_CONDITIONAL_F_TRUE=
-  FORTRAN_2003_NOTINTEL_CONDITIONAL_F_FALSE='#'
-else
-  FORTRAN_2003_NOTINTEL_CONDITIONAL_F_TRUE='#'
-  FORTRAN_2003_NOTINTEL_CONDITIONAL_F_FALSE=
 fi
 
 
@@ -13697,14 +13786,6 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${H5LZ4_TRUE}" && test -z "${H5LZ4_FALSE}"; then
   as_fn_error $? "conditional \"H5LZ4\" was never defined.
-Usually this means the macro was only invoked conditionally." "$LINENO" 5
-fi
-if test -z "${FORTRAN_2003_CONDITIONAL_F_TRUE}" && test -z "${FORTRAN_2003_CONDITIONAL_F_FALSE}"; then
-  as_fn_error $? "conditional \"FORTRAN_2003_CONDITIONAL_F\" was never defined.
-Usually this means the macro was only invoked conditionally." "$LINENO" 5
-fi
-if test -z "${FORTRAN_2003_NOTINTEL_CONDITIONAL_F_TRUE}" && test -z "${FORTRAN_2003_NOTINTEL_CONDITIONAL_F_FALSE}"; then
-  as_fn_error $? "conditional \"FORTRAN_2003_NOTINTEL_CONDITIONAL_F\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 

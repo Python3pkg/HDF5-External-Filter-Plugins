@@ -21,7 +21,9 @@ RM=rm -f
 CP=cp
 
 noinst_PROGRAMS = h5ex_d_lz4
-h5ex_d_lz4_SOURCE = h5ex_d_lz4.c
+h5ex_d_lz4_SOURCES = h5ex_d_lz4.c
+h5ex_d_lz4_CFLAGS = $(AM_CFLAGS) $(HDF5_CFLAGS) $(CFLAGS)
+h5ex_d_lz4_LDADD = $(HDF5_LIBS)
 
 # we have to add the testfiles to the distribution - otherwise the 
 # tests will not run

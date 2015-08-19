@@ -29,7 +29,9 @@ AM_MAINTAINER_MODE
 
 # Checks for programs.
 AC_PROG_CC
+AM_PROG_CC_C_O
 AC_PROG_INSTALL
+PKG_PROG_PKG_CONFIG
 
 AC_CANONICAL_HOST
 AC_PREFIX_DEFAULT([`pwd`/plugins])
@@ -157,74 +159,12 @@ AC_ARG_WITH([fnord],
 ##
 ## The only reason we need the HDF5 library is to run the tests.
 ##
-AC_SUBST(LIBHDF5) LIBHDF5=""
-AC_SUBST(HDF5PATH) HDF5PATH=""
-AC_ARG_WITH([hdf5],
-            [AC_HELP_STRING([--with-hdf5=DIR],
-                            [Where to find the HDF5 library])],,)
+## This needs some improvement if we cannot find the HDF5 library via 
+## pkg-config.
+PKG_CHECK_MODULES([HDF5],[hdf5],
+                  [HDF5_FOUND=1 ],
+                  [AC_MSG_ERROR(Could not find HDF5 - required for plugin test!)])
 
-case "$withval" in
-  yes)
-    AC_CHECK_HEADER([hdf5.h],,
-                     [AC_MSG_ERROR([cannot find HDF5 header files.])])
-    AC_CHECK_LIB([hdf5], [H5open],,
-                 [AC_MSG_ERROR([cannot find the HDF5 library.])])
-    ;;
-  no)
-    AC_MSG_ERROR([HDF5 library needed for compilation.])
-    ;;
-  *)
-    case "$withval" in
-      *,*)
-        hdf5_inc="`echo $withval | cut -f1 -d,`"
-        hdf5_lib="`echo $withval | cut -f2 -d, -s`"
-        ;;
-      *)
-        if test -n "$withval"; then
-          hdf5_inc="$withval/include"
-          hdf5_lib="$withval/lib"
-        fi
-        ;;
-    esac
-
-    if test -n "$hdf5_inc"; then
-      CPPFLAGS="$CPPFLAGS -I$hdf5_inc"
-    fi
-
-    AC_CHECK_HEADER([hdf5.h],,
-                     [AC_MSG_ERROR([cannot find HDF5 header files!])])
-
-    HDF5PATH="$hdf5_lib,"
-    HDF5PATH="`echo $HDF5PATH | sed -e "s/lib,/bin/"`"
-
-    if test -n "$hdf5_lib"; then
-      LDFLAGS="$LDFLAGS -L$hdf5_lib"
-
-      ## We want to use the ``.la'' version of the HDF5 library which
-      ## is the thing libtool creates and has in it all of the neat
-      ## stuff like where to find the libraries libhdf5 depends upon.
-      if test -f "$hdf5_lib/libhdf5.la"; then
-        libdir_saved=$libdir
-        . $hdf5_lib/libhdf5.la
-        libdir=$libdir_saved
-        for lib in X $dependency_libs; do
-          case "$lib" in
-            *libhdf5.la*)
-              ;;
-            *)
-              if test "$lib" != "X"; then
-                LIBHDF5="$LIBHDF5 $lib"
-              fi
-              ;;
-          esac
-        done
-      fi
-    fi
-
-    AC_CHECK_LIB([hdf5], [H5open],,
-                 [AC_MSG_ERROR([cannot find HDF5 library.])])
-    ;;
-esac
 
 
 ## Add the suffix to CC for shared linking.  Cannot just set as an option
@@ -236,12 +176,6 @@ fi
 ## ======================================================================
 ## Checks for library functions
 ## ======================================================================
-
-AC_MSG_CHECKING([for math library support])
-AC_TRY_LINK([#include <math.h>], [volatile x = 37.927; k=1.2; sinh(x*k/cosh(x/k)],
-            [AC_MSG_RESULT([yes])],
-            [AC_MSG_RESULT([no]); LIBS="$LIBS -lm"])
-
 
 ## Checks for libraries.
 
