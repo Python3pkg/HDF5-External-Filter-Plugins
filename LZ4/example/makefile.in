@@ -254,7 +254,7 @@ SCRIPT_DEPEND = h5ex_d_lz4$(EXEEXT)
 TEST_EXTENSIONS = .sh
 SH_LOG_COMPILER = $(SHELL)
 AM_SH_LOG_FLAGS = 
-CLEANFILES = *.h5 tmp.test tmp.out *.tst *.ddl 
+CLEANFILES = *.h5 tmp.test tmp.out *.tst *.ddl *.err* *.out* *.new
 DISTCLEANFILES = test.sh
 all: all-am
 
