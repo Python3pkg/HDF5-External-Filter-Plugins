@@ -81,11 +81,10 @@ CONFIG_CLEAN_VPATH_FILES =
 PROGRAMS = $(noinst_PROGRAMS)
 am_h5ex_d_lz4_OBJECTS = h5ex_d_lz4-h5ex_d_lz4.$(OBJEXT)
 h5ex_d_lz4_OBJECTS = $(am_h5ex_d_lz4_OBJECTS)
-am__DEPENDENCIES_1 =
-h5ex_d_lz4_DEPENDENCIES = $(am__DEPENDENCIES_1)
+h5ex_d_lz4_LDADD = $(LDADD)
 h5ex_d_lz4_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(h5ex_d_lz4_CFLAGS) \
-	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+	$(CFLAGS) $(h5ex_d_lz4_LDFLAGS) $(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/bin/depcomp
 am__depfiles_maybe = depfiles
@@ -137,6 +136,7 @@ EXEEXT = @EXEEXT@
 FGREP = @FGREP@
 GREP = @GREP@
 HDF5_CFLAGS = @HDF5_CFLAGS@
+HDF5_LDFLAGS = @HDF5_LDFLAGS@
 HDF5_LIBS = @HDF5_LIBS@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -236,7 +236,7 @@ RM = rm -f
 CP = cp
 h5ex_d_lz4_SOURCES = h5ex_d_lz4.c
 h5ex_d_lz4_CFLAGS = $(AM_CFLAGS) $(HDF5_CFLAGS) $(CFLAGS)
-h5ex_d_lz4_LDADD = $(HDF5_LIBS)
+h5ex_d_lz4_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS) $(HDF5_LDFLAGS) 
 
 # we have to add the testfiles to the distribution - otherwise the 
 # tests will not run

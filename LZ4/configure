@@ -638,6 +638,7 @@ LTLIBOBJS
 H5LZ4_FALSE
 H5LZ4_TRUE
 LIBOBJS
+HDF5_LDFLAGS
 HDF5_LIBS
 HDF5_CFLAGS
 CPP
@@ -767,6 +768,7 @@ with_gnu_ld
 with_sysroot
 enable_libtool_lock
 with_fnord
+with_hdf5
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1428,6 +1430,7 @@ Optional Packages:
     --with-xxx=DIR     - Specify only the directory which contains the
                          include/ and lib/ subdirectories
 
+  --with-hdf5=DIR         Where to find the HDF5 library
 
 Some influential environment variables:
   CC          C compiler command
@@ -11830,6 +11833,19 @@ fi
 ## This needs some improvement if we cannot find the HDF5 library via
 ## pkg-config.
 
+# Check whether --with-hdf5 was given.
+if test "${with_hdf5+set}" = set; then :
+  withval=$with_hdf5;
+else
+  hdf5_check=sys
+fi
+
+
+## if the user has passed no options we have to search on the system
+if test "x$hdf5_check" = "xsys"; then
+
+    ## we try first with pkg-config
+
 pkg_failed=no
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for HDF5" >&5
 $as_echo_n "checking for HDF5... " >&6; }
@@ -11888,18 +11904,162 @@ fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$HDF5_PKG_ERRORS" >&5
 
-	as_fn_error $? "Could not find HDF5 - required for plugin test!" "$LINENO" 5
+	HDF5_FOUND=no
 elif test $pkg_failed = untried; then
      	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
-	as_fn_error $? "Could not find HDF5 - required for plugin test!" "$LINENO" 5
+	HDF5_FOUND=no
 else
 	HDF5_CFLAGS=$pkg_cv_HDF5_CFLAGS
 	HDF5_LIBS=$pkg_cv_HDF5_LIBS
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
-	HDF5_FOUND=1
+	HDF5_FOUND=yes
 fi
+
+    ## if there is no pkg-config support we do it the hard way
+    if test "x$HDF5_FOUND" = "xyes" ; then
+        HDF5_LDFLAGS=$HDF5_LIBS
+    else
+        ac_fn_c_check_header_mongrel "$LINENO" "hdf5.h" "ac_cv_header_hdf5_h" "$ac_includes_default"
+if test "x$ac_cv_header_hdf5_h" = xyes; then :
+
+else
+  as_fn_error $? "cannot find HDF5 header files." "$LINENO" 5
+fi
+
+
+        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for H5open in -lhdf5" >&5
+$as_echo_n "checking for H5open in -lhdf5... " >&6; }
+if ${ac_cv_lib_hdf5_H5open+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lhdf5  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char H5open ();
+int
+main ()
+{
+return H5open ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_hdf5_H5open=yes
+else
+  ac_cv_lib_hdf5_H5open=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_hdf5_H5open" >&5
+$as_echo "$ac_cv_lib_hdf5_H5open" >&6; }
+if test "x$ac_cv_lib_hdf5_H5open" = xyes; then :
+  HDF5_LDFLAGS=-lhdf5
+else
+  as_fn_error $? "cannot find the HDF5 library." "$LINENO" 5
+fi
+
+    fi
+else
+    case "$withval" in
+      *,*)
+        hdf5_inc="`echo $withval | cut -f1 -d,`"
+        hdf5_lib="`echo $withval | cut -f2 -d, -s`"
+        ;;
+      *)
+        if test -n "$withval"; then
+          hdf5_inc="$withval/include"
+          hdf5_lib="$withval/lib"
+        fi
+        ;;
+    esac
+
+    ## if the user has passed a directory via the --with-hdf5 option
+    ## no pkg-config search is performed. The user may wants to override
+    ## the system wide library
+
+    if test -n "$hdf5_inc"; then
+      CPPFLAGS="$CPPFLAGS -I$hdf5_inc"
+    fi
+
+    ac_fn_c_check_header_mongrel "$LINENO" "hdf5.h" "ac_cv_header_hdf5_h" "$ac_includes_default"
+if test "x$ac_cv_header_hdf5_h" = xyes; then :
+
+else
+  as_fn_error $? "cannot find HDF5 header files!" "$LINENO" 5
+fi
+
+
+
+    if test -n "$hdf5_lib"; then
+      LDFLAGS="$LDFLAGS -L$hdf5_lib"
+    fi
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for H5open in -lhdf5" >&5
+$as_echo_n "checking for H5open in -lhdf5... " >&6; }
+if ${ac_cv_lib_hdf5_H5open+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lhdf5  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char H5open ();
+int
+main ()
+{
+return H5open ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_hdf5_H5open=yes
+else
+  ac_cv_lib_hdf5_H5open=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_hdf5_H5open" >&5
+$as_echo "$ac_cv_lib_hdf5_H5open" >&6; }
+if test "x$ac_cv_lib_hdf5_H5open" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBHDF5 1
+_ACEOF
+
+  LIBS="-lhdf5 $LIBS"
+
+else
+  as_fn_error $? "cannot find HDF5 library." "$LINENO" 5
+fi
+
+
+    ## it is ok to add these options to CPPFLAGS and LDFLAGS as they are
+    ## both user provided
+    HDF5_LDFLAGS=-lhdf5
+fi
+
 
 
 

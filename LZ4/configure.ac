@@ -161,9 +161,66 @@ AC_ARG_WITH([fnord],
 ##
 ## This needs some improvement if we cannot find the HDF5 library via 
 ## pkg-config.
-PKG_CHECK_MODULES([HDF5],[hdf5],
-                  [HDF5_FOUND=1 ],
-                  [AC_MSG_ERROR(Could not find HDF5 - required for plugin test!)])
+AC_ARG_WITH([hdf5],
+            [AC_HELP_STRING([--with-hdf5=DIR],
+                            [Where to find the HDF5 library])],,
+            [hdf5_check=sys])
+
+## if the user has passed no options we have to search on the system 
+if test "x$hdf5_check" = "xsys"; then
+
+    ## we try first with pkg-config
+    PKG_CHECK_MODULES([HDF5],[hdf5],
+                      [HDF5_FOUND=yes ],
+                      [HDF5_FOUND=no])
+   
+    ## if there is no pkg-config support we do it the hard way
+    if test "x$HDF5_FOUND" = "xyes" ; then
+        HDF5_LDFLAGS=$HDF5_LIBS
+    else
+        AC_CHECK_HEADER([hdf5.h],,
+                         [AC_MSG_ERROR([cannot find HDF5 header files.])])
+        AC_CHECK_LIB([hdf5], [H5open],
+                     [HDF5_LDFLAGS=-lhdf5],
+                     [AC_MSG_ERROR([cannot find the HDF5 library.])])
+    fi
+else 
+    case "$withval" in
+      *,*)
+        hdf5_inc="`echo $withval | cut -f1 -d,`"
+        hdf5_lib="`echo $withval | cut -f2 -d, -s`"
+        ;;
+      *)
+        if test -n "$withval"; then
+          hdf5_inc="$withval/include"
+          hdf5_lib="$withval/lib"
+        fi
+        ;;
+    esac
+
+    ## if the user has passed a directory via the --with-hdf5 option 
+    ## no pkg-config search is performed. The user may wants to override
+    ## the system wide library
+    
+    if test -n "$hdf5_inc"; then
+      CPPFLAGS="$CPPFLAGS -I$hdf5_inc"
+    fi
+
+    AC_CHECK_HEADER([hdf5.h],,
+                     [AC_MSG_ERROR([cannot find HDF5 header files!])])
+    
+    if test -n "$hdf5_lib"; then
+      LDFLAGS="$LDFLAGS -L$hdf5_lib"
+    fi
+
+    AC_CHECK_LIB([hdf5], [H5open],,
+                 [AC_MSG_ERROR([cannot find HDF5 library.])])
+
+    ## it is ok to add these options to CPPFLAGS and LDFLAGS as they are 
+    ## both user provided 
+    HDF5_LDFLAGS=-lhdf5
+fi
+AC_SUBST([HDF5_LDFLAGS])
 
 
 
